@@ -19,11 +19,11 @@ while (true)
     Console.WriteLine("7 - Média de preço por categoria");
     Console.WriteLine("9 - Sair");
 
-    if (!int.TryParse(Console.ReadLine(), out int op))
-    {
-        Console.WriteLine("Opção inválida. Tente novamente.");
-        continue;
-    }
+
+
+    int op;
+    op = int.Parse(Console.ReadLine());
+
     switch (op)
     {
         case 1:
@@ -76,8 +76,11 @@ while (true)
 static void P_MaisVendido(List<Produto> produtos)
 {
     var P_Ordenado = produtos.OrderByDescending(produtos => produtos.QtdVendida).Take(5);
+    
     var I = 1;
+    
     Console.WriteLine("\u001B[4mTop 5 - Produtos Mais Vendidos\u001B[24m");
+    
     foreach (var produto in P_Ordenado)
     {
         Console.WriteLine($"Top {I}: Código - {produto.Codigo} - {produto.Descricao} - {produto.QtdVendida} Unidades Vendidas.");
@@ -87,8 +90,11 @@ static void P_MaisVendido(List<Produto> produtos)
 static void P_MenosVendido(List<Produto> produtos)
 {
     var P_Ordenado = produtos.OrderBy(produtos => produtos.QtdVendida).Take(5);
+    
     var I = 1;
+    
     Console.WriteLine("\u001B[4mTop 5 - Produtos Menos Vendidos\u001B[24m");
+    
     foreach (var produto in P_Ordenado)
     {
         Console.WriteLine($"Top {I}: Código - {produto.Codigo} - {produto.Descricao} - {produto.QtdVendida} Unidades Vendidas.");
@@ -98,8 +104,11 @@ static void P_MenosVendido(List<Produto> produtos)
 static void P_MaisEstoque(List<Produto> produtos)
 {
     var P_Ordenado = produtos.OrderByDescending(produtos => produtos.Estoque).Take(3);
+    
     var I = 1;
+    
     Console.WriteLine("\u001B[4mTop 3 - Produtos Com Mais Estoque\u001B[24m");
+    
     foreach (var produto in P_Ordenado)
     {
         Console.WriteLine($"Top {I}: Código - {produto.Codigo} - {produto.Descricao} - {produto.Estoque} Unidades em Estoque.");
@@ -109,12 +118,14 @@ static void P_MaisEstoque(List<Produto> produtos)
 static void C_MaisVendida(List<Produto> produtos)
 {
     var C_Ordenado = produtos.GroupBy(produtos => produtos.Categoria).OrderByDescending(produtos => produtos.Sum(produtos => produtos.QtdVendida)).First().Key;
+    
     Console.WriteLine($"Categoria: {C_Ordenado}");
 }
 
 static void C_Media(List<Produto> produtos)
 {
     var Media = produtos.GroupBy(produtos => produtos.Categoria).Select(groupBy => new { Categoria = groupBy.Key, PrecoMedio = groupBy.Average(produtos => produtos.Preco) });
+    
     foreach (var item in Media)
     {
         Console.WriteLine($"Categoria: {item.Categoria} - Preço médio: {item.PrecoMedio:n2}");
@@ -123,7 +134,6 @@ static void C_Media(List<Produto> produtos)
 static void E_Estoque(List<Produto> produtos)
 {
     var ExcessoEstoque = produtos.Where(produtos => produtos.Estoque >= (produtos.QtdVendida * 3));
-
     Console.WriteLine("\u001B[4mExcesso de estoque\u001B[24m");
 
     foreach (var produto in ExcessoEstoque)
