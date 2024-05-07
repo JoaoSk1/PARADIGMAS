@@ -15,6 +15,8 @@ namespace ApiWebDB.Services
     public class ClienteService
     {
         private readonly PostgresContext _dbCDbContext;
+
+        private readonly Microsoft.Extensions.Logging.ILogger _logger;
         public ClienteService(PostgresContext dbCDbContext) 
         {
             _dbCDbContext = dbCDbContext;
@@ -37,8 +39,8 @@ namespace ApiWebDB.Services
             if (!ClienteValidate.Execute(dto))
                 return null;
 
-
             var existingEntity = GetById(id);
+
             if (existingEntity == null)
             {
                 throw new NotFoundException("Registro não existe");
@@ -55,7 +57,6 @@ namespace ApiWebDB.Services
             ClienteById.Tipodoc = entity.Tipodoc;
             ClienteById.Alteradoem = System.DateTime.Now;
 
-
             _dbCDbContext.Update(ClienteById);
             _dbCDbContext.SaveChanges();
 
@@ -65,6 +66,7 @@ namespace ApiWebDB.Services
         public TbCliente GetById(int id)
         {
             var existingEntity = _dbCDbContext.TbClientes.FirstOrDefault(c => c.Id == id);
+
             if (existingEntity == null)
             {
                 throw new NotFoundException("Registro não existe");
@@ -74,6 +76,7 @@ namespace ApiWebDB.Services
         public IEnumerable<TbCliente> Get()
         {
             var existingEntity = _dbCDbContext.TbClientes.ToList();
+
             if (existingEntity == null || existingEntity.Count == 0)
             {
                 throw new NotFoundException("Nenhum registro encontrado");

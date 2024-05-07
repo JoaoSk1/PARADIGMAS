@@ -33,4 +33,5 @@ public partial class TbCliente
     public DateTime Alteradoem { get; set; }
 
     public virtual ICollection<TbEndereco> TbEnderecos { get; set; } = new List<TbEndereco>();
+
 }

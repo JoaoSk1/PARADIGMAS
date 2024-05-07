@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ApiWebDB.BaseDados.Models;
 
@@ -28,5 +29,8 @@ public partial class TbEndereco
     /// </summary>
     public int Status { get; set; }
 
+
     public virtual TbCliente Cliente { get; set; }
+
+
 }

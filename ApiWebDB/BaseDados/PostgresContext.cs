@@ -9,8 +9,7 @@ public partial class PostgresContext : DbContext
     {
     }
 
-    public PostgresContext(DbContextOptions<PostgresContext> options)
-        : base(options)
+    public PostgresContext(DbContextOptions<PostgresContext> options) : base(options)
     {
     }
 

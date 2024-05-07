@@ -2,42 +2,43 @@
 using ApiWebDB.Services;
 using ApiWebDB.Services.DTOs;
 using ApiWebDB.Services.Exceptions;
+using ApiWebDB.Services.Parser;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Serilog.Core;
+using Serilog;
+using System;
 
 namespace ApiWebDB.Controllers
 {
-
     /// <summary>
-    /// Controlador para gerenciar os clientes.
+    /// Controlador para gerenciar os endereços.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientesController : ControllerBase    
+    public class EnderecosController : ControllerBase
     {
-        private readonly ClienteService _service;
-        
+        private readonly EnderecoService _service;
+
         private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
-
-        public ClientesController(ClienteService service, ILogger<EnderecosController> logger)
+        public EnderecosController(EnderecoService service, ILogger<EnderecosController> logger)
         {
             _service = service;
-
             _logger = logger;
         }
 
         /// <summary>
-        /// Insere um novo cliente.
+        /// Adicionar um novo endereço.
         /// </summary>
-        /// <param name="cliente">O cliente a ser inserido.</param>
-        /// <returns>O cliente inserido.</returns>
+        /// <param name="endereco">O endereço a ser inserido.</param>
+        /// <returns>O endereço inserido com sucesso.</returns>
         [HttpPost()]
-        public ActionResult<TbCliente> Insert(ClienteDTO cliente)
+        public ActionResult<TbEndereco> Insert(EnderecoDTO endereco)
         {
             try
             {
-                var entity = _service.Insert(cliente);
+                var entity = _service.Insert(endereco);
                 return Ok(entity);
             }
             catch (InvalidEntity E)
@@ -47,44 +48,74 @@ namespace ApiWebDB.Controllers
                 {
                     StatusCode = 422
                 };
+
             }
-            catch (System.Exception E)
+            catch (Exception E)
             {
                 _logger.LogError(E.Message);
 
                 return BadRequest(E.Message);
             }
-        }
 
+        }
         /// <summary>
-        /// Atualiza um cliente existente.
+        /// Obtém todos os endereços.
         /// </summary>
-        /// <param name="id">ID - do cliente a ser atualizado.</param>
-        /// <param name="dto">Os novos dados do cliente.</param>
-        /// <returns>O cliente atualizado.</returns>
-        [HttpPut("{id}")]
-        public ActionResult<TbCliente> Update(int id, ClienteDTO dto)
+        /// <returns>Uma lista de todos os endereços.</returns>
+        [HttpGet()]
+        public ActionResult<TbEndereco> Get()
         {
             try
             {
-                var entity = _service.Update(dto, id);
+                var entity = _service.Get();
+                return Ok(entity);
+            }
+            catch (NotFoundException E)
+            {
+                return NotFound(E.Message);
+            }
+            catch (System.Exception e)
+            {
+                _logger.LogError(e.Message);
+
+                return new ObjectResult(new { error = e.Message })
+                {
+                    StatusCode = 500
+                };
+            }
+        }
+
+
+        /// <summary>
+        /// Atualiza um endereço existente.
+        /// </summary>
+        /// <param name="id"> ID do endereço a ser atualizado.</param>
+        /// <param name="dto">Os novos dados do endereço.</param>
+        /// <returns>O endereço atualizado.</returns>
+
+        [HttpPut("{id}")]
+        public ActionResult<TbEndereco> Update(int id, EnderecoDTO endereco)
+        {
+            try
+            {
+                var entity = _service.Update(endereco, id);
                 return Ok(entity);
             }
             catch (System.Exception e)
             {
                 _logger.LogError(e.Message);
-                
+
                 return BadRequest(e.Message);
             }
         }
 
         /// <summary>
-        /// Deleta um cliente.
+        /// Exclui um endereço.
         /// </summary>
-        /// <param name="id">ID - do cliente a ser excluído.</param>
+        /// <param name="id">ID do endereço a ser excluído.</param>
         /// <returns>Retorna NoContent se a exclusão for bem-sucedida.</returns>
         [HttpDelete("{id}")]
-        public ActionResult<TbCliente> Delete(int id)
+        public ActionResult<TbEndereco> Delete(int id)
         {
             try
             {
@@ -107,43 +138,16 @@ namespace ApiWebDB.Controllers
         }
 
         /// <summary>
-        /// Traz um cliente pelo ID.
+        /// Traz um endereço pelo ID do cliente.
         /// </summary>
-        /// <param name="id">O ID do cliente a ser obtido.</param>
-        /// <returns>O cliente solicitado.</returns>
+        /// <param name="id">ID do Cliente.</param>
+        /// <returns>O endereço solicitado.</returns>
         [HttpGet("{id}")]
-        public ActionResult<TbCliente> GetById(int id)
+        public ActionResult<TbEndereco> GetByIdEnder(int id)
         {
             try
             {
-                var entity = _service.GetById(id);
-                return Ok(entity);
-            }
-            catch (NotFoundException E)
-            {
-                return NotFound(E.Message);
-            }
-            catch (System.Exception e)
-            {
-                _logger.LogError(e.Message);
-
-                return new ObjectResult(new { error = e.Message })
-                {
-                    StatusCode = 500
-                };
-            }
-        }
-
-        /// <summary>
-        /// Traz todos os clientes.
-        /// </summary>
-        /// <returns>Uma lista de todos os clientes.</returns>
-        [HttpGet()]
-        public ActionResult<TbCliente> Get()
-        {
-            try
-            {
-                var entity = _service.Get();
+                var entity = _service.GetByIdEnder(id);
                 return Ok(entity);
             }
             catch (NotFoundException E)
